@@ -72,7 +72,7 @@ function SignUpCard() {
       <div className="auth__text">
         Have an account?
         <Link to="/signin">
-          <span style={{ color: "#0065ff", cursor: "pointer" }}> Sign Up </span>
+          <span style={{ color: "#0065ff", cursor: "pointer" }}> Sign In </span>
         </Link>
       </div>
     </div>
