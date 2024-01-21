@@ -49,7 +49,9 @@ function SignInCard() {
         </button>
       </form>
       {error ? <div className="auth__error">{error}</div> : ""}
-      <div className="auth__forgetpassword">Forgotten your password?</div>
+      <Link to="/reset">
+        <div className="auth__forgetpassword">Forgotten your password?</div>
+      </Link>
       <div className="auth__text">
         Don't have an account?{" "}
         <Link to="/signup">

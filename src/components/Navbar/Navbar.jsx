@@ -24,8 +24,17 @@ function Navbar() {
         <div className="auth__user">
           <FontAwesomeIcon icon={faBell} size="xl" className="nav__icons" />
           <FontAwesomeIcon icon={faCog} size="xl" className="nav__icons" />
-          <div className="user__avatar">
-            {currentUser._delegate.displayName.charAt(0).toUpperCase()}
+          <div
+            className="user__avatar"
+            title={
+              currentUser._delegate.displayName.length > 0
+                ? currentUser._delegate.displayName
+                : ""
+            }
+          >
+            {currentUser._delegate.displayName.length > 0
+              ? currentUser._delegate.displayName.charAt(0).toUpperCase()
+              : ""}
           </div>
           {/* <img
           className="avatar"

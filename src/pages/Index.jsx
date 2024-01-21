@@ -5,4 +5,6 @@ import Signin from "./Signin";
 import Signup from "./Signup";
 import Tasks from "./Tasks";
 import TaskEdit from "./TaskEdit";
-export { Signin, Signup, Home, Dashboard, Fof, Tasks, TaskEdit };
+import Reset from "./Reset";
+
+export { Signin, Signup, Home, Dashboard, Fof, Tasks, TaskEdit, Reset };

@@ -4,9 +4,10 @@ import {
   Signup,
   Home,
   Dashboard,
-  Fof,
   Tasks,
   TaskEdit,
+  Reset,
+  Fof,
 } from "../../pages/Index";
 import Navbar from "../Navbar/Navbar";
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route exact path="/task/:id" element={<Tasks />}></Route>
           <Route exact path="/task/:id/edit" element={<TaskEdit />}></Route>
           <Route exact path="/signup" element={<Signup />}></Route>
+          <Route exact path="/reset" element={<Reset />}></Route>
           <Route path="*" element={<Fof />}></Route>
         </Routes>
       </Router>
