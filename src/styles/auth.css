@@ -1,0 +1,71 @@
+.auth__container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.auth__title {
+  color: #0065ff;
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.auth__error {
+  color: red;
+  font-size: 0.8rem;
+}
+
+.auth__text {
+  padding: 0.6rem;
+}
+
+.auth__forgetpassword {
+  padding: 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.auth__card {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  align-items: center;
+  padding: 1.2rem;
+  margin-top: 4rem;
+}
+
+.auth__form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.auth__input {
+  padding: 0.6rem;
+  margin: 0.6rem;
+  border: 2px solid #dfe1e6;
+  border-radius: 4px;
+}
+
+.auth__input:focus {
+  outline-color: #0065ff;
+}
+
+@media only screen and (max-width: 992px) {
+  .auth__card {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .auth__card {
+    width: 70%;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .auth__card {
+    width: 90%;
+  }
+}

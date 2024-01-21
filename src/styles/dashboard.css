@@ -1,0 +1,9 @@
+.dashboard {
+  margin: 2rem;
+}
+
+@media only screen and (max-width: 768px) {
+  .dashboard {
+    margin: 1rem;
+  }
+}

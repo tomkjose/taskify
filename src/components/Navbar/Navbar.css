@@ -1,0 +1,62 @@
+.navbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: auto;
+  padding: 0 2rem;
+}
+
+.nav__brand {
+  font-weight: 800;
+  color: #0052cc;
+  font-size: 2rem;
+}
+
+.auth__btns {
+  display: flex;
+}
+
+.auth__button {
+  margin-left: 0.4rem;
+  margin-right: 0.4rem;
+}
+
+.avatar {
+  border-radius: 100%;
+  width: 2.4rem;
+  margin: 0 0.6rem;
+}
+
+.user__avatar {
+  border-radius: 100%;
+  width: 2.4rem;
+  height: 2.4rem;
+  margin: 0 0.6rem;
+  background-color: #c5221f;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth__user {
+  display: flex;
+  align-items: center;
+}
+
+.nav__icons {
+  color: #384764;
+  padding: 0 0.6rem;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 768px) {
+  .navbar {
+    padding: 0 1rem;
+  }
+
+  .nav__brand {
+    font-size: 1.4rem;
+  }
+}

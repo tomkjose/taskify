@@ -1,0 +1,80 @@
+.taskview {
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.taskview__title {
+  font-weight: 700;
+  flex-grow: 2;
+  color: #344564;
+}
+
+.taskview__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task__description {
+  color: #909498;
+  padding: 1rem;
+}
+
+.task__comments {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.comment__title {
+  color: #344564;
+}
+
+.taskview__comment {
+  width: 100%;
+  padding: 1rem;
+  margin: 1rem 0;
+  height: 8rem;
+  resize: none;
+}
+
+.comment__btn {
+  width: 8rem;
+}
+
+.comment__container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.comment {
+  display: flex;
+  align-items: center;
+  background-color: #f2f5f7;
+  border-radius: 0.8rem;
+  margin: 0.6rem 0;
+}
+
+.comment__user {
+  background-color: green;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin: 1rem;
+  border-radius: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  .taskview {
+    margin: 0 1rem;
+  }
+
+  .btn span {
+    display: none;
+  }
+}
