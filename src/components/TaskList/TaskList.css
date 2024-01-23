@@ -41,12 +41,12 @@
   padding: 0.4rem;
 }
 
-.task__status.active {
+.task__status.Active {
   background-color: #96dcc2;
   color: #387e64;
 }
 
-.task__status.completed {
+.task__status.Completed {
   background-color: #e1edf2;
   color: #0651ca;
 }
@@ -91,6 +91,14 @@
 
 .task__select option {
   padding: 0 0.4rem;
+}
+
+.loading {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media only screen and (max-width: 768px) {

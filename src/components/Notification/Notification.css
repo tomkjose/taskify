@@ -1,0 +1,61 @@
+.notification {
+  position: absolute;
+  width: 30%;
+  top: 60px;
+  right: 60px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  color: #344564;
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.notification__title {
+  margin: 1rem;
+}
+
+.clear__notification {
+  align-self: flex-end;
+  padding: 0.8rem;
+  cursor: pointer;
+}
+
+.notification__user {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  background-color: green;
+  border-radius: 100%;
+  padding: 0.6rem;
+  margin: 0.4rem;
+}
+
+.notification__item {
+  display: flex;
+  margin: 1rem;
+  padding: 1rem 0;
+  align-items: center;
+  border-bottom: 1px solid gray;
+}
+
+.notification__content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media only screen and (max-width: 768px) {
+  .notification {
+    right: 10px;
+    width: 90%;
+  }
+}

@@ -1,8 +1,7 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import {
   Signin,
   Signup,
-  Home,
   Dashboard,
   Tasks,
   TaskEdit,
@@ -16,7 +15,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route exact path="/" element={<Home />}></Route>
+          <Route exact path="/" element={<Signin />}></Route>
           <Route exact path="/dashboard" element={<Dashboard />}></Route>
           <Route exact path="/signin" element={<Signin />}></Route>
           <Route exact path="/task/:id" element={<Tasks />}></Route>

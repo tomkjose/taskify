@@ -1,16 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faCog } from "@fortawesome/free-solid-svg-icons";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-
+import Notification from "../Notification/Notification";
+import { db } from "../../firebase";
 function Navbar() {
   const { currentUser, logout } = useAuth();
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationCount, setNotifcationCount] = useState(0);
   // console.log("currentUser", currentUser);
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      try {
+        const notificationsRef = db.collection("notifications");
+        const unsubscribe = notificationsRef.onSnapshot((snapshot) => {
+          setNotifcationCount(snapshot.size);
+        });
+
+        return () => unsubscribe();
+      } catch (error) {
+        console.error("Error fetching notification count:", error);
+      }
+    };
+
+    fetchNotificationCount();
+  }, []);
+  const handleNotfication = () => {
+    setShowNotification(!showNotification);
+  };
   return (
     <div className="navbar">
-      <div className="nav__brand">Taskify</div>
+      {showNotification && <Notification />}
+      <Link to="/dashboard">
+        <div className="nav__brand">Taskify</div>
+      </Link>
       {!currentUser ? (
         <div className="auth__btns">
           <Link to="/signup">
@@ -22,8 +48,16 @@ function Navbar() {
         </div>
       ) : (
         <div className="auth__user">
-          <FontAwesomeIcon icon={faBell} size="xl" className="nav__icons" />
-          <FontAwesomeIcon icon={faCog} size="xl" className="nav__icons" />
+          <FontAwesomeIcon
+            icon={faBell}
+            size="xl"
+            className="nav__icons"
+            onClick={handleNotfication}
+          />
+          <div className="notification__count">
+            {notificationCount > 99 ? "99+" : notificationCount}
+          </div>
+          {/* <FontAwesomeIcon icon={faCog} size="xl" className="nav__icons" /> */}
           <div
             className="user__avatar"
             title={

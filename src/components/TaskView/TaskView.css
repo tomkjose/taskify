@@ -39,6 +39,12 @@
   resize: none;
 }
 
+.task__duedate {
+  color: #909498;
+  padding: 1rem;
+  font-weight: bold;
+}
+
 .comment__btn {
   width: 8rem;
 }

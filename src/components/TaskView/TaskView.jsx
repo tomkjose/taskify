@@ -1,83 +1,207 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./TaskView.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc,
+  arrayUnion,
+  deleteDoc,
+} from "firebase/firestore";
+
+import { db } from "../../firebase";
 import {
   faPaperPlane,
   faPenToSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../../context/AuthContext";
+import Loader from "../Loader/Loader";
+
 function TaskView() {
   const { id } = useParams();
-  const tasks = [
-    {
-      id: 1,
-      title: "This is a test Title for Project",
-      date: "29-05",
-      description:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
-      status: "active",
-      owner: "Tom Jose",
-    },
-    {
-      id: 2,
-      title: "This is a test Title for Project by Tharesh",
-      date: "29-05",
-      description:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
-      status: "completed",
-      owner: "Alex",
-    },
-    {
-      id: 3,
-      title: "This is a test Title for Project by Steve",
-      date: "29-05",
-      description:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
+  const { currentUser } = useAuth();
+  const [currentTask, setCurrentTask] = useState(null);
+  const [commentContent, setCommentContent] = useState("");
+  const navigate = useNavigate();
 
-      status: "active",
-      owner: "Steve Joseph",
-    },
-  ];
+  const handleChangeStatus = async () => {
+    try {
+      const taskDocRef = doc(db, "tasks", id);
+      await updateDoc(taskDocRef, {
+        status: !currentTask.status,
+      });
+    } catch (error) {
+      console.error("Error changing task status", error);
+    }
+  };
+
+  const handlePostComment = async () => {
+    try {
+      const taskDocRef = doc(db, "tasks", id);
+      await updateDoc(taskDocRef, {
+        comments: arrayUnion({
+          displayName: currentUser.displayName,
+          content: commentContent,
+        }),
+      });
+      await db.collection("notifications").add({
+        userName: currentUser._delegate.displayName,
+        userId: currentUser._delegate.uid,
+        title: currentTask.title,
+        type: "comment",
+      });
+      setCommentContent("");
+    } catch (error) {
+      console.error("Error posting comment", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchTask = async () => {
+      try {
+        const taskDocRef = doc(db, "tasks", id);
+        const taskDocSnap = await getDoc(taskDocRef);
+
+        if (taskDocSnap.exists()) {
+          setCurrentTask({ id: taskDocSnap.id, ...taskDocSnap.data() });
+        } else {
+          console.error("Task not found");
+          setCurrentTask(null);
+        }
+      } catch (error) {
+        console.error("Error fetching task", error);
+        setCurrentTask(null);
+      }
+    };
+
+    fetchTask();
+
+    const unsubscribe = onSnapshot(doc(db, "tasks", id), (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        setCurrentTask({ id: docSnapshot.id, ...docSnapshot.data() });
+      } else {
+        console.error("Task not found");
+        setCurrentTask(null);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [id]);
+
+  const handleDeleteTask = async () => {
+    try {
+      const taskDocRef = doc(db, "tasks", id);
+      await deleteDoc(taskDocRef);
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error deleting task", error);
+    }
+  };
+
+  const handleUpdateTask = () => {
+    navigate(`/task/${id}/edit`);
+  };
+
   return (
     <div className="taskview">
-      <div className="taskview__main">
-        <h2 className="taskview__title">{tasks[id].title}</h2>
-        <button className="btn">
-          <FontAwesomeIcon icon={faPenToSquare} style={{ color: "#ffffff" }} />{" "}
-          <span>Edit</span>
-        </button>
-        <button className="btn" style={{ backgroundColor: "#0d7f64" }}>
-          <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />{" "}
-          <span>Delete</span>
-        </button>
-      </div>
-      <div className="task__description">{tasks[id].description}</div>
-      <div className="task__comments">
-        <h4 className="comment__title">Comments :</h4>
-        <textarea
-          placeholder="Comment..."
-          className="taskview__comment"
-        ></textarea>
-        <button className="btn comment__btn">
-          <FontAwesomeIcon icon={faPaperPlane} style={{ color: "#ffffff" }} />{" "}
-          Post
-        </button>
-      </div>
-      <div className="comment__container">
-        <div className="comment">
-          <div className="comment__user">T</div>
-          <div className="comment__content">
-            Hello hi do we need to complete this task today ???
-          </div>
+      {currentTask === null ? (
+        <div
+          style={{
+            width: "100%",
+            height: "300px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Loader />
         </div>
-        <div className="comment">
-          <div className="comment__user">T</div>
-          <div className="comment__content">
-            Hello hi do we need to complete this task today ???
+      ) : (
+        <>
+          <div className="taskview__main">
+            <h2 className="taskview__title">{currentTask.title}</h2>
+            <button className="btn" onClick={handleUpdateTask}>
+              <FontAwesomeIcon
+                icon={faPenToSquare}
+                style={{ color: "#ffffff" }}
+              />{" "}
+              <span>Edit</span>
+            </button>
+            <button
+              className="btn"
+              style={{ backgroundColor: "#0d7f64" }}
+              onClick={handleDeleteTask}
+            >
+              <FontAwesomeIcon icon={faTrash} style={{ color: "#ffffff" }} />{" "}
+              <span>Delete</span>
+            </button>
           </div>
-        </div>
-      </div>
+          {currentTask ? (
+            <div
+              className={`task__status ${
+                currentTask.status === false ? "Active" : "Completed"
+              }`}
+              style={{
+                width: "8rem",
+                marginLeft: "0.6rem",
+                cursor: "pointer",
+                textAlign: "center",
+              }}
+              onClick={handleChangeStatus}
+              title="Current status"
+            >
+              {currentTask.status === false ? "Active" : "Completed"}
+            </div>
+          ) : (
+            ""
+          )}
+          <div className="task__description">{currentTask.description}</div>
+          {currentTask.dueDate ? (
+            <div className="task__duedate">Due date: {currentTask.dueDate}</div>
+          ) : (
+            ""
+          )}
+          {currentTask.comments ? (
+            <div className="task__comments">
+              <h4 className="comment__title">Comments :</h4>
+              <textarea
+                placeholder="Comment..."
+                className="taskview__comment"
+                onChange={(e) => setCommentContent(e.target.value)}
+              ></textarea>
+              <button className="btn comment__btn" onClick={handlePostComment}>
+                <FontAwesomeIcon
+                  icon={faPaperPlane}
+                  style={{ color: "#ffffff" }}
+                />{" "}
+                Post
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
+          {currentTask?.comments?.length > 0 ? (
+            <div className="comment__container">
+              {currentTask.comments.map((comment, index) => (
+                <div className="comment" key={index}>
+                  <div className="comment__user">
+                    {comment.displayName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="comment__content">{comment.content}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            ""
+          )}
+        </>
+      )}
     </div>
   );
 }
