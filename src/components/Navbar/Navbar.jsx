@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Notification from "../Notification/Notification";
 import { db } from "../../firebase";
@@ -12,7 +12,7 @@ function Navbar() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0);
   const authUserRef = useRef(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchNotificationCount = async () => {
       try {
@@ -48,6 +48,11 @@ function Navbar() {
     setShowNotification(!showNotification);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/signin");
+  };
+
   return (
     <div className="navbar">
       <Link to="/dashboard">
@@ -80,7 +85,7 @@ function Navbar() {
               ? currentUser._delegate.displayName.charAt(0).toUpperCase()
               : ""}
           </div>
-          <button className="btn auth__button" onClick={logout}>
+          <button className="btn auth__button" onClick={handleLogout}>
             Logout
           </button>
         </div>

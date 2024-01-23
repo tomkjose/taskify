@@ -5,11 +5,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { doc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import "../styles/taskedit.css";
+import { useAuth } from "../context/AuthContext";
 
 function TaskEdit() {
   const { id } = useParams();
+
   const [currentTask, setCurrentTask] = useState({});
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/signin");
+    }
+  }, []);
   useEffect(() => {
     const fetchTask = async () => {
       try {
