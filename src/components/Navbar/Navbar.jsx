@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
@@ -6,18 +6,19 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Notification from "../Notification/Notification";
 import { db } from "../../firebase";
+
 function Navbar() {
   const { currentUser, logout } = useAuth();
   const [showNotification, setShowNotification] = useState(false);
-  const [notificationCount, setNotifcationCount] = useState(0);
-  // console.log("currentUser", currentUser);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const authUserRef = useRef(null);
 
   useEffect(() => {
     const fetchNotificationCount = async () => {
       try {
         const notificationsRef = db.collection("notifications");
         const unsubscribe = notificationsRef.onSnapshot((snapshot) => {
-          setNotifcationCount(snapshot.size);
+          setNotificationCount(snapshot.size);
         });
 
         return () => unsubscribe();
@@ -28,36 +29,45 @@ function Navbar() {
 
     fetchNotificationCount();
   }, []);
-  const handleNotfication = () => {
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (authUserRef.current && !authUserRef.current.contains(event.target)) {
+        setShowNotification(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [authUserRef]);
+
+  const handleNotification = () => {
     setShowNotification(!showNotification);
   };
+
   return (
     <div className="navbar">
-      {showNotification && <Notification />}
       <Link to="/dashboard">
         <div className="nav__brand">Taskify</div>
       </Link>
-      {!currentUser ? (
-        <div className="auth__btns">
-          <Link to="/signup">
-            <button className="btn auth__button">Sign Up</button>
-          </Link>
-          <Link to="/signin">
-            <button className="btn auth__button">Sign In</button>
-          </Link>
-        </div>
-      ) : (
-        <div className="auth__user">
+      {currentUser ? (
+        <div ref={authUserRef} className="auth__user">
+          {showNotification && <Notification />}
           <FontAwesomeIcon
             icon={faBell}
             size="xl"
             className="nav__icons"
-            onClick={handleNotfication}
+            onClick={handleNotification}
           />
-          <div className="notification__count">
-            {notificationCount > 99 ? "99+" : notificationCount}
-          </div>
-          {/* <FontAwesomeIcon icon={faCog} size="xl" className="nav__icons" /> */}
+          {notificationCount > 0 && (
+            <div className="notification__count">
+              {notificationCount > 99 ? "99+" : notificationCount}
+            </div>
+          )}
+
           <div
             className="user__avatar"
             title={
@@ -70,14 +80,18 @@ function Navbar() {
               ? currentUser._delegate.displayName.charAt(0).toUpperCase()
               : ""}
           </div>
-          {/* <img
-          className="avatar"
-          src="https://xsgames.co/randomusers/assets/avatars/male/74.jpg"
-          alt="avatar"
-        /> */}
           <button className="btn auth__button" onClick={logout}>
             Logout
           </button>
+        </div>
+      ) : (
+        <div>
+          <Link to="/signin">
+            <button className="btn">Sign In</button>
+          </Link>
+          <Link to="/signup">
+            <button className="btn">Sign up</button>
+          </Link>
         </div>
       )}
     </div>
